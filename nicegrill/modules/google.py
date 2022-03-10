@@ -62,10 +62,7 @@ class Google:
             os.remove(path)
  
     async def lmgtfyxxx(message):
-        keyword = (
-            (await message.get_reply_message()).message 
-            if not utils.get_arg(message) 
-            else utils.get_arg(message))
+        keyword = utils.get_arg(message) or (await message.get_reply_message()).message
         if not keyword:
             await message.edit(
                 "<i>You didn't specify a keyword. Reply to a message"

@@ -39,7 +39,9 @@ class Main:
 
     async def outgoing(message):
         prefix = await settings.check_prefix()
-        if not message.raw_text.startswith(prefix + "whitelist") and await blacklist.check_blacklist(message.chat_id):
+        if not message.raw_text.startswith(
+            f'{prefix}whitelist'
+        ) and await blacklist.check_blacklist(message.chat_id):
             return
         mods = {}
         ls = [_init.modules[obj] for obj in _init.modules]
@@ -49,8 +51,12 @@ class Main:
             if message.text.startswith(prefix * 2):
                 await message.edit(message.text[1:])
                 return
-            args = (message.text[2:]).split(" ") if message.text.startswith(
-                prefix + " ") else message.text[1:].split(" ")
+            args = (
+                (message.text[2:]).split(" ")
+                if message.text.startswith(f'{prefix} ')
+                else message.text[1:].split(" ")
+            )
+
             if "\n" in message.text.split(" ")[0]:  # Prevention for new lines
                 args = message.text[1:].split("\n")
             for cmd in mods:

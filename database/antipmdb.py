@@ -36,20 +36,32 @@ async def set_sblock(opt):
     return cli.insert_one({"SuperBlock": opt})
 
 async def check_antipm():
-    return (False if not cli.find_one({"AntiPM": {"$exists": True}})
-        else cli.find_one({"AntiPM": {"$exists": True}})["AntiPM"])
+    return (
+        cli.find_one({"AntiPM": {"$exists": True}})["AntiPM"]
+        if cli.find_one({"AntiPM": {"$exists": True}})
+        else False
+    )
 
 async def check_limit():
-    return (3 if not cli.find_one({"Limit": {"$exists": True}})
-        else cli.find_one({"Limit": {"$exists": True}})["Limit"])
+    return (
+        cli.find_one({"Limit": {"$exists": True}})["Limit"]
+        if cli.find_one({"Limit": {"$exists": True}})
+        else 3
+    )
     
 async def check_sblock():
-    return (False if not cli.find_one({"SuperBlock": {"$exists": True}})
-        else cli.find_one({"SuperBlock": {"$exists": True}})["SuperBlock"])
+    return (
+        cli.find_one({"SuperBlock": {"$exists": True}})["SuperBlock"]
+        if cli.find_one({"SuperBlock": {"$exists": True}})
+        else False
+    )
 
 async def check_notifs():
-    return (True if not cli.find_one({"Notifications": {"$exists": True}})
-        else cli.find_one({"Notifications": {"$exists": True}})["Notifications"])
+    return (
+        cli.find_one({"Notifications": {"$exists": True}})["Notifications"]
+        if cli.find_one({"Notifications": {"$exists": True}})
+        else True
+    )
 
 async def check_approved(user):
     return cli.find_one({"Approved": user})

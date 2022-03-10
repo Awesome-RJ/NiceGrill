@@ -56,10 +56,20 @@ class AntiPM:
     async def approvexxx(message):
         """Allows that person to PM you, you can either reply to user,
 type their username or use this in their chat"""
-        id = None if not utils.get_arg(message) else (await message.client.get_entity(utils.get_arg(message))).id
-        reply = None if not message.is_reply else (await message.get_reply_message()).sender_id
-        chat = None if not hasattr(
-            message.to_id, "user_id") else message.chat_id
+        id = (
+            (await message.client.get_entity(utils.get_arg(message))).id
+            if utils.get_arg(message)
+            else None
+        )
+
+        reply = (
+            (await message.get_reply_message()).sender_id
+            if message.is_reply
+            else None
+        )
+
+        chat = message.chat_id if hasattr(
+            message.to_id, "user_id") else None
         if not reply and not id and not chat:
             await message.edit("<b>No user found</b>")
             return
@@ -79,10 +89,20 @@ type their username or use this in their chat"""
     async def disapprovexxx(message):
         """Prevents that person to PM you, you can either reply to user,
 type their username or use this in their chat"""
-        id = None if not utils.get_arg(message) else (await message.client.get_entity(utils.get_arg(message))).id
-        reply = None if not message.is_reply else (await message.get_reply_message()).sender_id
-        chat = None if not hasattr(
-            message.to_id, "user_id") else message.chat_id
+        id = (
+            (await message.client.get_entity(utils.get_arg(message))).id
+            if utils.get_arg(message)
+            else None
+        )
+
+        reply = (
+            (await message.get_reply_message()).sender_id
+            if message.is_reply
+            else None
+        )
+
+        chat = message.chat_id if hasattr(
+            message.to_id, "user_id") else None
         if not reply and not id and not chat:
             await message.edit("<b>No user found</b>")
             return
@@ -101,10 +121,20 @@ type their username or use this in their chat"""
 
     async def blockxxx(message):
         """Simply blocks the person..duh!!"""
-        id = None if not utils.get_arg(message) else (await message.client.get_entity(utils.get_arg(message))).id
-        reply = None if not message.is_reply else (await message.get_reply_message()).sender_id
-        chat = None if not hasattr(
-            message.to_id, "user_id") else message.chat_id
+        id = (
+            (await message.client.get_entity(utils.get_arg(message))).id
+            if utils.get_arg(message)
+            else None
+        )
+
+        reply = (
+            (await message.get_reply_message()).sender_id
+            if message.is_reply
+            else None
+        )
+
+        chat = message.chat_id if hasattr(
+            message.to_id, "user_id") else None
         if not reply and not id and not chat:
             await message.edit("<i>No user found</i>")
             return
@@ -121,10 +151,20 @@ type their username or use this in their chat"""
 
     async def unblockxxx(message):
         """Simply unblocks the person..duh!!"""
-        id = None if not utils.get_arg(message) else (await message.client.get_entity(utils.get_arg(message))).id
-        reply = None if not message.is_reply else (await message.get_reply_message()).sender_id
-        chat = None if not hasattr(
-            message.to_id, "user_id") else message.chat_id
+        id = (
+            (await message.client.get_entity(utils.get_arg(message))).id
+            if utils.get_arg(message)
+            else None
+        )
+
+        reply = (
+            (await message.get_reply_message()).sender_id
+            if message.is_reply
+            else None
+        )
+
+        chat = message.chat_id if hasattr(
+            message.to_id, "user_id") else None
         if not reply and not id and not chat:
             await message.edit("<i>No user found</i>")
             return
@@ -184,34 +224,37 @@ will be deleted when the idiot passes the message limit"""
         setPM(command)
 
     async def watchout(message):
-        if message.sender_id != (await message.client.get_me()).id and isinstance(message.to_id, tl.types.PeerUser):
-            if getattr(message.sender, "bot", None) or not await nicedb.check_antipm():
+        if message.sender_id == (
+            await message.client.get_me()
+        ).id or not isinstance(message.to_id, tl.types.PeerUser):
+            return
+        if getattr(message.sender, "bot", None) or not await nicedb.check_antipm():
+            return
+        user = (await message.get_sender()).id
+        if await nicedb.check_approved(user):
+            return
+        if not await nicedb.check_notifs():
+            await message.client.send_read_acknowledge(message.chat_id)
+        user_warns = 0 if user not in AntiPM.USERS_AND_WARNS else AntiPM.USERS_AND_WARNS[
+            user]
+        if user_warns <= await nicedb.check_limit() - 2:
+            user_warns += 1
+            AntiPM.USERS_AND_WARNS.update({user: user_warns})
+            if AntiPM.FLOOD_CTRL <= 0:
+                AntiPM.FLOOD_CTRL += 1
+            else:
+                AntiPM.FLOOD_CTRL = 0
                 return
-            user = (await message.get_sender()).id
-            if await nicedb.check_approved(user):
-                return
-            if not await nicedb.check_notifs():
-                await message.client.send_read_acknowledge(message.chat_id)
-            user_warns = 0 if user not in AntiPM.USERS_AND_WARNS else AntiPM.USERS_AND_WARNS[
-                user]
-            if user_warns <= await nicedb.check_limit() - 2:
-                user_warns += 1
-                AntiPM.USERS_AND_WARNS.update({user: user_warns})
-                if not AntiPM.FLOOD_CTRL > 0:
-                    AntiPM.FLOOD_CTRL += 1
-                else:
-                    AntiPM.FLOOD_CTRL = 0
-                    return
-                async for msg in message.client.iter_messages(entity=message.chat_id,
-                                                             from_user='me',
-                                                             search="I have not allowed you to PM",
-                                                             limit=1):
-                    await msg.delete()
-                await message.reply(AntiPM.WARNING)
-                return
-            await message.reply(AntiPM.BLOCKED)
-            await message.client(functions.messages.ReportSpamRequest(peer=message.sender_id))
-            await message.client(functions.contacts.BlockRequest(id=message.sender_id))
-            if await nicedb.check_sblock():
-                await message.client.delete_dialog(entity=message.chat_id, revoke=True)
-            AntiPM.USERS_AND_WARNS.update({user: 0})
+            async for msg in message.client.iter_messages(entity=message.chat_id,
+                                                         from_user='me',
+                                                         search="I have not allowed you to PM",
+                                                         limit=1):
+                await msg.delete()
+            await message.reply(AntiPM.WARNING)
+            return
+        await message.reply(AntiPM.BLOCKED)
+        await message.client(functions.messages.ReportSpamRequest(peer=message.sender_id))
+        await message.client(functions.contacts.BlockRequest(id=message.sender_id))
+        if await nicedb.check_sblock():
+            await message.client.delete_dialog(entity=message.chat_id, revoke=True)
+        AntiPM.USERS_AND_WARNS.update({user: 0})

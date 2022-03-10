@@ -48,28 +48,21 @@ class Downloader:
         while not dl.isFinished():
             await asyncio.sleep(1)
             await reply.edit(
-                f"<b>File Name: </b> <i>{dl.get_dest()}</i>\n"
-                f"<b>Size: </b> <i>{dl.get_final_filesize(human=True)}</i>\n"
-                f"<b>Speed: </b> <i>{dl.get_speed(human=True)}</i>\n"
-                f"<b>Time Passed: </b> <i>{str(datetime.now()-btime)[0:-7]}</i>\n"
-                f"<b>Downloaded: </b> <i>{dl.get_dl_size(human=True)}</i>\n"
-                f"<b>Estimated: </b> <i>{dl.get_eta(human=True)}</i>\n"
-                f"<b>Status: </b> <i>{dl.get_status().capitalize()}</i>\n"
-                f"<i>{dl.get_progress_bar().replace('-', '◯').replace('#', '⬤').replace('[', '').replace(']', '')}</i>")
+                f"<b>File Name: </b> <i>{dl.get_dest()}</i>\n<b>Size: </b> <i>{dl.get_final_filesize(human=True)}</i>\n<b>Speed: </b> <i>{dl.get_speed(human=True)}</i>\n<b>Time Passed: </b> <i>{str(datetime.now()-btime)[:-7]}</i>\n<b>Downloaded: </b> <i>{dl.get_dl_size(human=True)}</i>\n<b>Estimated: </b> <i>{dl.get_eta(human=True)}</i>\n<b>Status: </b> <i>{dl.get_status().capitalize()}</i>\n<i>{dl.get_progress_bar().replace('-', '◯').replace('#', '⬤').replace('[', '').replace(']', '')}</i>"
+            )
 
     async def tgstatus(message, rec, tot, media, btime, process):
         perc = round((rec / tot) * 100)
         if str((tot / rec) / 1024) not in message.text:
             bar = str("⬤" * int(perc // 5) + shell[int(perc // 5)::])
             rec = (
-                f"{round(rec/1024, 2)}KB" if not (rec / 1024) > 1024
-                else f"{round(rec/1048576, 2)}MB")
-            down = (
-                f"<b>File Name:</b> <i>{media}</i>\n"
-                f"<b>Size:</b> <i>{round(tot/1048576, 2)}Mb</i>\n"
-                f"<b>{process}</b> <i>{rec}</i>\n"
-                f"<b>Time Passed:</b> <i>{str(datetime.now()-btime)[0:-7]}</i>\n"
-                f"<i>{bar}</i>")
+                f"{round(rec/1024, 2)}KB"
+                if rec <= 1048576
+                else f"{round(rec/1048576, 2)}MB"
+            )
+
+            down = f"<b>File Name:</b> <i>{media}</i>\n<b>Size:</b> <i>{round(tot/1048576, 2)}Mb</i>\n<b>{process}</b> <i>{rec}</i>\n<b>Time Passed:</b> <i>{str(datetime.now()-btime)[:-7]}</i>\n<i>{bar}</i>"
+
             if Downloader.counter > 10:
                 await message.edit(down)
                 Downloader.counter = 0
@@ -80,12 +73,18 @@ class Downloader:
         """Downloads the replied media or input url with a nice progressbar"""
         path = await settings.check_path()
         target = (
-            utils.get_arg(message) if not message.is_reply
-            else (await message.get_reply_message()).media)
+            (await message.get_reply_message()).media
+            if message.is_reply
+            else utils.get_arg(message)
+        )
+
         try:
             name = (
-                target.split("/")[-1] if not message.is_reply else
-                target.document.attributes[-1].file_name)
+                target.document.attributes[-1].file_name
+                if message.is_reply
+                else target.split("/")[-1]
+            )
+
         except AttributeError:
             if (await message.get_reply_message()).photo:
                 name = (await message.get_reply_message()).photo.id
@@ -95,8 +94,6 @@ class Downloader:
                 pass
             elif (await message.get_reply_message()).voice:
                 name = "voice.ogg"
-            elif (await message.get_reply_message()).audio:
-                pass
         await message.edit("<b>Downloading</b> <i>{}</i>...".format(name))
         time = datetime.now()
         if getattr(await message.get_reply_message(), "media", None):

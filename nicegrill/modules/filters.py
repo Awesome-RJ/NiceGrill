@@ -36,10 +36,7 @@ class Filters:
         if len(args) == 1 and not message.is_reply:
             await message.edit("<b>You need to either enter a a text or reply to a message to save as filter</b>")
             return
-        if message.is_reply:
-            value = reply.text
-        else:
-            value = " ".join(args[1:])
+        value = reply.text if message.is_reply else " ".join(args[1:])
         name = args[0]
         chatid = message.chat_id
         if reply and reply.media and not reply.web_preview:
@@ -59,9 +56,7 @@ class Filters:
             await message.edit("<b>No filter found in this chat</b>")
             return
         caption = "<b>Word(s) you filtered in this chat:\n\n</b>"
-        list = ""
-        for filter in filters:
-            list += "<b>  ◍ " + filter["Key"] + "</b>\n"
+        list = "".join("<b>  ◍ " + filter["Key"] + "</b>\n" for filter in filters)
         caption += list
         await message.edit(caption)
 
@@ -94,7 +89,7 @@ class Filters:
             return
         for item in filters:
             if item["Key"] in arg:
-                value = item["Value"] if not item["Media"] else item["Media"]
+                value = item["Media"] or item["Value"]
                 if item["Media"]:
                     fetch = await message.client.get_messages(entity=storage, ids=value)
                     await message.client.send_message(chatid, fetch, reply_to=message.id)

@@ -28,5 +28,4 @@ async def update_user(query, newvalue):
     return cli.update_one(query, {"$set": newvalue})
 
 async def check_user(user):
-    return (False if not cli.find_one({"User": user})
-        else cli.find_one({"User": user}))
+    return cli.find_one({"User": user}) or False

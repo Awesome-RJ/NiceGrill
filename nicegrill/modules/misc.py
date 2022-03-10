@@ -57,10 +57,10 @@ class Misc:
             os.popen("git fetch")
             await message.edit("<i>Checking...</i>")
             await asyncio.sleep(1)
-            updates = os.popen(
+            if updates := os.popen(
                 "git log --pretty=format:'%s - %an (%cr)' --abbrev-commit"
-                " --date=relative master..origin/master").readlines()
-            if updates:
+                " --date=relative master..origin/master"
+            ).readlines():
                 ls = "<b>Updates:</b>\n\n"
                 for i in updates:
                     ls += f"◍  <i>{i.capitalize()}</i>"
@@ -73,7 +73,7 @@ class Misc:
         await message.edit("<i>Updating</i>")
         update = os.popen("git pull").read()
         if "up to date" not in update:
-            await message.edit(f"<i>Succesfully Updated</i>")
+            await message.edit("<i>Succesfully Updated</i>")
             await asyncio.sleep(1.5)
             await Misc.restartxxx(message)
         else:
@@ -90,7 +90,7 @@ class Misc:
             await message.edit("<b>Added successfully</b>")
             return
         if not str(arg)[1:].isdigit() and arg != "make":
-            await message.edit(f"<i>Either put an ID or type .asset make</i>")
+            await message.edit("<i>Either put an ID or type .asset make</i>")
             return
         await settings.delete("Asset")
         await settings.set_asset(int(arg))

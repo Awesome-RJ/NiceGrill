@@ -25,7 +25,7 @@ async def add(colname, chat, key, value, media):
         {"Chat": chat, "Key": key, "Value": value, "Media": media})
 
 async def check(colname, chat):
-    return [x for x in cli[colname].find({"Chat": chat})]
+    return list(cli[colname].find({"Chat": chat}))
 
 async def check_one(colname, chat, key):
     return cli[colname].find_one({"Chat": chat, "Key": key})

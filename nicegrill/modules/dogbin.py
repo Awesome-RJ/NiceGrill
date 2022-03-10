@@ -75,12 +75,10 @@ class Dogbin:
         if not link.startswith(f"{URL}"):
             await message.edit("<i>Not a valid URL</i>")
             return
-        if "raw" in link.split("/"):
-            getpaste = get(link)
-        else:
+        if "raw" not in link.split("/"):
             link = link.split("/")
             link.insert(-1, "raw")
             print(link)
             link = "/".join(link)
-            getpaste = get(link)
+        getpaste = get(link)
         await message.edit(getpaste.text)

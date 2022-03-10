@@ -82,9 +82,11 @@ class Admin:
         chat = message.input_chat
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id
-                if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except ValueError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -114,9 +116,11 @@ class Admin:
         chat = message.input_chat
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id
-                if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except ValueError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -147,8 +151,11 @@ class Admin:
         chat = message.input_chat
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except ValueError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -177,9 +184,11 @@ class Admin:
         chat = message.input_chat
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id
-                if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except ValueError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -194,9 +203,6 @@ class Admin:
         except TypeError:
             await message.edit("<b>You need to be in a chat to do this</b>")
             return
-        except TypeError:
-            await message.edit("<b>You need to be in a chat to do this</b>")
-            return
         except UserAdminInvalidError:
             await message.edit("<b>You're either not an admin or that's more admin than you</b>")
         except UserIdInvalidError:
@@ -208,8 +214,11 @@ class Admin:
         chat = message.input_chat
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except ValueError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -231,8 +240,11 @@ class Admin:
         chat = message.input_chat
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except ValueError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -253,8 +265,11 @@ class Admin:
         chat = message.input_chat
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except ValueError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -273,7 +288,7 @@ class Admin:
 
     async def pinxxx(message):
         reply = await message.get_reply_message()
-        loud = True if utils.get_arg(message) == "loud" else False
+        loud = utils.get_arg(message) == "loud"
         if not reply:
             await message.edit("<b>Reply to a message first.</b>")
             return
@@ -284,8 +299,11 @@ class Admin:
     async def gbanxxx(message):
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except ValueError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -302,8 +320,11 @@ class Admin:
     async def ungbanxxx(message):
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except ValueError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -321,8 +342,11 @@ class Admin:
         await message.edit("<b>Muting...</b>")
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except ValueError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -340,8 +364,11 @@ class Admin:
         await message.edit("<b>Unmuting...</b>")
         try:
             user = (
-                (await message.client.get_entity(utils.get_arg(message))).id if not message.is_reply else
-                (await message.get_reply_message()).sender.id)
+                (await message.get_reply_message()).sender.id
+                if message.is_reply
+                else (await message.client.get_entity(utils.get_arg(message))).id
+            )
+
         except TypeError:
             await message.edit("<b>No user found in that name</b>")
             return
@@ -366,10 +393,8 @@ class Admin:
             entity = await nicedb.check_user(user)
             if (await message.client.get_me()).id == entity["User"]:
                 return
-            if entity["Mute"] and entity["GMute"]:
+            if entity["Mute"] and (entity["GMute"] or entity["Chat"] == chat):
                 await message.delete()
-            elif entity["Mute"] and not entity["GMute"] and entity["Chat"] == chat:
-                  await message.delete()
             if entity["GBan"]:
                 try:
                     await message.client(EditBannedRequest(chat, user, BAN))

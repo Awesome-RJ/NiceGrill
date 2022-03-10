@@ -29,8 +29,8 @@ class Weather:
         if not await settings.check_city() and not utils.get_arg(message):
             await message.edit("<b>Enter a city name first</b>")
             return
-        city = await settings.check_city() if not utils.get_arg(
-            message) else utils.get_arg(message)
+        city = utils.get_arg(
+            message) or await settings.check_city()
         weather = wtr.find(city)
         await message.edit(
             f"<b>City:</b> <i>{weather['weather']['city']}</i>\n"

@@ -28,15 +28,13 @@ async def others(opt):
     return cli.insert_one({"Others": opt})
 
 async def check():
-    return (False if not [x for x in cli.find({}, {"Others": 0})]
-        else [x for x in cli.find({}, {"Others": 0})])
+    return list(cli.find({}, {"Others": 0})) or False
 
 async def check_one(key):
-    return (False if not cli.find_one({"Key": key})
-        else cli.find_one({"Key": key}))
+    return cli.find_one({"Key": key}) or False
 
 async def check_others():
-    return False if cli.find_one({"Others": False}) else True
+    return not cli.find_one({"Others": False})
 
 async def update(query, key, value, media):
     return cli.update_one(

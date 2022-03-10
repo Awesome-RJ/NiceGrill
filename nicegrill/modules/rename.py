@@ -48,7 +48,7 @@ class Renamer:
         if os.path.isfile(name):
             os.remove(name)
         try:
-            request.urlretrieve(args[0], "./" + name)
+            request.urlretrieve(args[0], f"./{name}")
         except ValueError:
             await message.edit("<i>You did it wrong.. It's .rndl url filename </i>")
             return

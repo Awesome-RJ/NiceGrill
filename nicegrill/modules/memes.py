@@ -48,7 +48,7 @@ class Memes:
 
     async def watchout(message):
         if await blacklist.check_blacklist(message.chat_id):
-            return            
+            return
         if message.text.lower() == "yey":
             for i in range(10):
                 await message.edit("Y" + "e" * i + "y")
@@ -58,7 +58,7 @@ class Memes:
                 await message.edit("O" + "o" * i + "f")
 
         if message.text.lower() == ":/":
-            for i in range(10):
+            for _ in range(10):
                 await message.edit(r":\/".replace("/", ""))
                 time.sleep(0.3)
                 await message.edit(":/")

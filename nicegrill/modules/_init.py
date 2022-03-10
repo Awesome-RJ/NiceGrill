@@ -30,12 +30,15 @@ async def loads():
         for mod in dloads:
             request.urlretrieve(mod["URL"], "./" + mod["Name"])
             try:
-                imported.append(__import__(mod["Name"][0:-3]))
-                print("Module is loaded: {}".format(
-                    mod["Name"][0:-3].capitalize()))
+                imported.append(__import__(mod["Name"][:-3]))
+                print("Module is loaded: {}".format(mod["Name"][:-3].capitalize()))
             except ImportError as e:
-                print("Module can not be loaded: {}\n\n{}".format(
-                    mod["Name"][0:-3].capitalize(), e))
+                print(
+                    "Module can not be loaded: {}\n\n{}".format(
+                        mod["Name"][:-3].capitalize(), e
+                    )
+                )
+
             os.remove(mod["Name"])
     base = os.path.basename(__name__)
     for f in os.listdir("/".join(base.split(".")[:2])):

@@ -104,23 +104,30 @@ class Snips:
         if not await nicedb.check_one(message.text[1::]):
             return
         args = message.text
-        if not await nicedb.check_others():
-            if message.sender_id != (await message.client.get_me()).id:
-                return
+        if (
+            not await nicedb.check_others()
+            and message.sender_id != (await message.client.get_me()).id
+        ):
+            return
         if args.startswith("$"):
             argsraw = args[1::]
             snip = await nicedb.check_one(argsraw)
             value = (
-                    snip["Value"] if not snip["Media"]
-                    else await message.client.get_messages(await settings.check_asset(), ids=snip["Value"]))
-            if not snip["Media"]:
-                if message.sender_id == (await message.client.get_me()).id:
-                    await message.edit(value)
-                else:
-                    await message.reply(value)
-            else:
+                await message.client.get_messages(
+                    await settings.check_asset(), ids=snip["Value"]
+                )
+                if snip["Media"]
+                else snip["Value"]
+            )
+
+            if snip["Media"]:
                 if message.sender_id == (await message.client.get_me()).id:
                     await message.client.send_message(message.chat_id, value)
                     await message.delete()
                 else:
                     await message.client.send_message(message.chat_id, value, reply_to=message.id)
+
+            elif message.sender_id == (await message.client.get_me()).id:
+                await message.edit(value)
+            else:
+                await message.reply(value)

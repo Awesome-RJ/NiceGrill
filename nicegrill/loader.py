@@ -29,7 +29,7 @@ class Loadmod:
 
     def load(mod, client):
         try:
-            imp = __import__(mod[0:-3].replace("/", "."))
+            imp = __import__(mod[:-3].replace("/", "."))
         except Exception as e:
             Loadmod.logger.error(e)
             return False
@@ -48,9 +48,10 @@ class Loadmod:
                     if callable(vars(clss)[func]) and vars(
                             clss)[func].__name__.endswith("xxx"):
                         modules[clss.__name__].update(
-                            {vars(clss)[func].__name__[0:-3]: vars(clss)[func]})
-                        classes.update(
-                            {clss.__name__: vars(clss)[func].__name__[0:-3]})
+                            {vars(clss)[func].__name__[:-3]: vars(clss)[func]}
+                        )
+
+                        classes.update({clss.__name__: vars(clss)[func].__name__[:-3]})
                 if not classes[clss.__name__]:
                     del classes[clss.__name__]
                     del modules[clss.__name__]

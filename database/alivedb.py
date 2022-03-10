@@ -27,10 +27,10 @@ async def set_message(msg):
     return cli.insert_one({"ID": 2, "Message": msg})
 
 async def check_name():
-    return False if not cli.find_one({"ID": 1}) else cli.find_one({"ID": 1})["Name"]
+    return cli.find_one({"ID": 1})["Name"] if cli.find_one({"ID": 1}) else False
 
 async def check_msg():
-    return False if not cli.find_one({"ID": 2}) else cli.find_one({"ID": 2})["Message"]
+    return cli.find_one({"ID": 2})["Message"] if cli.find_one({"ID": 2}) else False
 
 async def update(query, newvalue):
     return cli.update_one(query, {"$set": newvalue})

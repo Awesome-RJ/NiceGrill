@@ -58,7 +58,7 @@ class Python:
             await message.edit(caption + f"<code>{html.escape(res)}</code>\n\n{printed}")
         except MessageTooLongError:
             res = textwrap.wrap(res, 4096-len(caption))
-            await message.edit(caption + f"<code>{res[0]}</code>")
+            await message.edit(f"{caption}<code>{res[0]}</code>")
             for part in res[1::]:
                 await asyncio.sleep(1)
                 await message.reply(f"<code>{part}</code>")

@@ -27,8 +27,11 @@ class Urban:
     async def udxxx(message):
         """Searches through urban dictionary"""
         word = (
-            utils.get_arg(message) if not message.is_reply
-            else (await message.get_reply_message()).text)
+            (await message.get_reply_message()).text
+            if message.is_reply
+            else utils.get_arg(message)
+        )
+
         try:
             a = urbandict.define(word)
         except HTTPError:

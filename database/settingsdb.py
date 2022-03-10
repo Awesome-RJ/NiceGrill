@@ -41,32 +41,49 @@ async def set_gfolder(id):
     return cli.insert_one({"GFolder": id})
 
 async def check_city():
-    return ("" if not cli.find_one({"City": {"$exists": True}})
-        else cli.find_one({"City": {"$exists": True}})["City"])
+    return (
+        cli.find_one({"City": {"$exists": True}})["City"]
+        if cli.find_one({"City": {"$exists": True}})
+        else ""
+    )
 
 async def check_pack():
-    return ("" if not cli.find_one({"Pack": {"$exists": True}})
-        else cli.find_one({"Pack": {"$exists": True}})["Pack"])
+    return (
+        cli.find_one({"Pack": {"$exists": True}})["Pack"]
+        if cli.find_one({"Pack": {"$exists": True}})
+        else ""
+    )
 
 async def check_path():
-    return ("./" if not cli.find_one({"Path": {"$exists": True}})
-        else cli.find_one({"Path": {"$exists": True}})["Path"])
+    return (
+        cli.find_one({"Path": {"$exists": True}})["Path"]
+        if cli.find_one({"Path": {"$exists": True}})
+        else "./"
+    )
     
 async def check_prefix():
-    return ("." if not cli.find_one({"Prefix": {"$exists": True}})
-        else cli.find_one({"Prefix": {"$exists": True}})["Prefix"])
+    return (
+        cli.find_one({"Prefix": {"$exists": True}})["Prefix"]
+        if cli.find_one({"Prefix": {"$exists": True}})
+        else "."
+    )
 
 async def check_restart():
-    return (False if not cli.find_one({"Message": {"$exists": True}})
-        else cli.find_one({"Message": {"$exists": True}}))
+    return cli.find_one({"Message": {"$exists": True}}) or False
 
 async def check_asset():
-    return (False if not cli.find_one({"Asset": {"$exists": True}})
-        else cli.find_one({"Asset": {"$exists": True}})["Asset"])
+    return (
+        cli.find_one({"Asset": {"$exists": True}})["Asset"]
+        if cli.find_one({"Asset": {"$exists": True}})
+        else False
+    )
 
 async def check_gfolder():
-    return (False if not cli.find_one({"GFolder": {"$exists": True}})
-        else cli.find_one({"GFolder": {"$exists": True}})["GFolder"])
+    return (
+        cli.find_one({"GFolder": {"$exists": True}})["GFolder"]
+        if cli.find_one({"GFolder": {"$exists": True}})
+        else False
+    )
 
 async def delete(obj):
     return cli.delete_one({obj: {"$exists": True}})

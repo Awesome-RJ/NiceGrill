@@ -42,8 +42,10 @@ class Terminal:
             stdout, stderr = await process.communicate()
             out = stdout.decode() + stderr.decode()
             result = template + "{}</code>".format(
-                "Process returned with exit code: " + str(process.returncode) if not out
-                else out)
+                out
+                or f"Process returned with exit code: {str(process.returncode)}"
+            )
+
             await message.edit(result)
             return
         TERMLIST.update({message.id: process})
@@ -51,15 +53,19 @@ class Terminal:
         for line in (await process.stdout.read()).decode().split("\n"):
             if Terminal.FLOODCONTROL < 4:
                 Terminal.FLOODCONTROL += 1
-                out += "<code>{}\n</code>".format(line if line else (await process.stderr.readline()).decode())
+                out += "<code>{}\n</code>".format(
+                    line or (await process.stderr.readline()).decode()
+                )
+
                 continue
             Terminal.FLOODCONTROL = 0
-            out += "<code>{}\n</code>".format(line if line else (await process.stderr.readline()).decode())
-            if len(out) < 1500 and message.id in TERMLIST:
-                await message.edit(template + out)
-            else:
+            out += "<code>{}\n</code>".format(
+                line or (await process.stderr.readline()).decode()
+            )
+
+            if len(out) >= 1500 or message.id not in TERMLIST:
                 out = out[600: -1]
-                await message.edit(template + out)
+            await message.edit(template + out)
         try:
             await message.edit(template + out)
         except MessageNotModifiedError:

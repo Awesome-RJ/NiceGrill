@@ -58,7 +58,7 @@ class Stickers:
         if not pack:
             await message.edit("<i>You don't own this pack</i>")
             return
-        elif packid and pack:
+        elif packid:
             await settings.delete("Pack")
             await settings.set_pack(packid)
             await message.edit("<i>Pack saved successfully</i>")
@@ -75,14 +75,17 @@ class Stickers:
         if not packid:
             msg = "<i>You have no sticker pack set, so I'm creating a new pack</i>"
             task = "/newpack"
-            pn = pn = "NiceGrill" if not message.sender.username else message.sender.username.capitalize()
+            pn = pn = (
+                message.sender.username.capitalize()
+                if message.sender.username
+                else "NiceGrill"
+            )
+
             result = (
                 "<i>Your new pack has been created.</i>\n"
                 "<i>Click</i> <a href=https://t.me/addstickers/{}>Here</a> "
                 "<i>to access it</i>")
             name, emoji, done, packid = False, False, False, False
-            await Stickers.kang(
-                message, msg, task, name, emoji, done, packid, result)
         else:
             msg = random.choice(Stickers.STRINGS)
             task = "/addsticker"
@@ -90,10 +93,11 @@ class Stickers:
                 "<i>Sticker kanged succesfully.</i>\n"
                 "<i>Click</i> <a href=https://t.me/addstickers/{}>Here</a> "
                 "<i>to access it</i>".format(packid))
-            emoji = utils.get_arg(message) if utils.get_arg(message) else False
+            emoji = utils.get_arg(message) or False
             name, done = True, True
-            await Stickers.kang(
-                message, msg, task, name, emoji, done, packid, result)
+
+        await Stickers.kang(
+            message, msg, task, name, emoji, done, packid, result)
 
     async def resize(message, img):
         file = Image.open(img)
@@ -107,7 +111,7 @@ class Stickers:
         check_sticker_chat = False
         async with message.client.conversation("@stickers", total_timeout=15) as conv:
             async for chat in message.client.iter_dialogs():
-                if 429000 == chat.id:
+                if chat.id == 429000:
                     check_sticker_chat = True
                     await message.client.send_read_acknowledge(conv.chat_id)
             if not check_sticker_chat:
@@ -115,7 +119,7 @@ class Stickers:
             await message.edit(msg)
             await conv.send_message(task)
             await message.client.send_read_acknowledge(conv.chat_id)
-            id = None if not packid else await conv.send_message(packid)
+            id = await conv.send_message(packid) if packid else None
             await message.client.send_read_acknowledge(conv.chat_id)
             packname = None if name is True else await conv.send_message(
                 "{}'s Kang Pack Vol".format(message.sender.first_name))
@@ -124,7 +128,7 @@ class Stickers:
                 entity=429000, file="sticker.png", force_document=True)
             await message.client.send_read_acknowledge(conv.chat_id)
             os.remove("sticker.png")
-            pickemoji = random.choice(Stickers.EMOJI) if not emoji else emoji
+            pickemoji = emoji or random.choice(Stickers.EMOJI)
             await conv.send_message(pickemoji)
             await message.client.send_read_acknowledge(conv.chat_id)
             if done:
@@ -136,7 +140,12 @@ class Stickers:
             await message.client.send_read_acknowledge(conv.chat_id)
             await conv.send_message("/skip")
             await message.client.send_read_acknowledge(conv.chat_id)
-            pn = "NiceGrill" if not message.sender.username else message.sender.username.capitalize()
+            pn = (
+                message.sender.username.capitalize()
+                if message.sender.username
+                else "NiceGrill"
+            )
+
             id = await conv.send_message(
                 "{}sKangPack_{}_{}".format(
                     pn, (await message.get_sender()).id, random.randint(0, 99999999)))

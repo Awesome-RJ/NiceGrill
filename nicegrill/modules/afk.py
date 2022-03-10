@@ -73,7 +73,7 @@ them later. Check your storage channel."""
                                                   "<b>◍ Message Link: </b>{}\n\n"
                                                   "<b>Message:</b>\n<i>{}</i>"
                                                   .format((await message.get_sender()).id, user, chat.id, chat.title, link, sentmsg))
-            if not AFK.flood_ctrl > 0:
+            if AFK.flood_ctrl <= 0:
                 AFK.flood_ctrl += 1
             else:
                 AFK.flood_ctrl = 0
@@ -81,9 +81,9 @@ them later. Check your storage channel."""
             now = datetime.now()
             delta = now - then
             time = str(timedelta(seconds=delta.seconds)).split(":")
-            days = "" if delta.days == 0 else str(delta.days) + " days"
-            hours = "" if time[0] == "0" else time[0] + " hours"
-            minutes = "" if time[1] == "00" else time[1] + " minutes and "
+            days = "" if delta.days == 0 else f'{str(delta.days)} days'
+            hours = "" if time[0] == "0" else f'{time[0]} hours'
+            minutes = "" if time[1] == "00" else f'{time[1]} minutes and '
             then = then.strftime('%Y-%m-%d %H:%M:%S')
             afkmsg = (
                 "<b>I'm AFK for the moment\nReason:</b> <i>{}</i>\n\n"

@@ -28,16 +28,13 @@ async def update_file(name, path, newfile):
         {"Name": name}, {"$set": {"File": newfile, "Path": path}})
 
 async def check():
-    return (False if not [x for x in cli.find({}, {"File": 0})]
-        else [x for x in cli.find({}, {"File": 0})])
+    return list(cli.find({}, {"File": 0})) or False
 
 async def retrieve():
-    return (False if not [x for x in cli.find({})]
-        else [x for x in cli.find({})])
+    return list(cli.find({})) or False
 
 async def check_one(name):
-    return (False if not cli.find_one({"Name": name})
-        else True)
+    return bool(cli.find_one({"Name": name}))
 
 async def delete():
     return cli.delete_many({})

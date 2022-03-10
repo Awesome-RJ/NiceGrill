@@ -33,7 +33,7 @@ Purges the chat with a given message count or until the replied message"""
         if not count and not message.is_reply:
             await message.edit("<b>Enter a number or reply to a message</b>")
             return
-        elif not count and message.is_reply:
+        elif not count:
             count = (await message.get_reply_message()).id - 1
         async for msg in client.iter_messages(message.chat_id, limit=count, min_id=count):
             msgs.append(msg.id)
@@ -55,7 +55,7 @@ Purges the chat with a given message count or till the replied message but only 
         if not count and not message.is_reply:
             await message.edit("<b>Enter a number or reply to a message</b>")
             return
-        elif not count and message.is_reply:
+        elif not count:
             count = (await message.get_reply_message()).id - 1
         async for msg in client.iter_messages(message.chat_id, from_user='me', limit=count, min_id=count):
             msgs.append(msg.id)

@@ -60,7 +60,9 @@ class Store:
         if not files:
             await message.edit("<i>There's no saved file</i>")
             return
-        ls = ""
-        for item in files:
-            ls += f"<b>File:</b> <i>{item['Name']}</i>\n<b>Will be restored to:</b> <i>{item['Path']}</i>\n\n"
+        ls = "".join(
+            f"<b>File:</b> <i>{item['Name']}</i>\n<b>Will be restored to:</b> <i>{item['Path']}</i>\n\n"
+            for item in files
+        )
+
         await message.edit(ls)

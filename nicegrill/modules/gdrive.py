@@ -38,9 +38,8 @@ class GoogleDrive:
         arg = utils.get_arg(message)
         if message.is_reply or arg.startswith("http") or arg.startswith("www"):
             file = (await dl.dlxxx(message)).split("/")
-        else:
-            if "/" not in arg:
-                file = arg.split("/")
+        elif "/" not in arg:
+            file = arg.split("/")
         if await settings.check_gfolder():
             folder = await settings.check_gfolder()
         elif gservice.list_folders_by_name('Telegram'):

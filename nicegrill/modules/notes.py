@@ -55,9 +55,7 @@ class Notes:
             await message.edit("<b>No notes found in this chat</b>")
             return
         caption = "<b>Notes you saved in this chat:\n\n</b>"
-        list = ""
-        for note in notes:
-            list += "<b>  ◍ " + note["Key"] + "</b>\n"
+        list = "".join("<b>  ◍ " + note["Key"] + "</b>\n" for note in notes)
         caption += list
         await message.edit(caption)
 
@@ -85,7 +83,12 @@ class Notes:
         note = await nicedb.check_one("Notes", chatid, arg)
         if not note:
             return
-        fetch = None if not note["Media"] else await message.client.get_messages(entity=storage, ids=note["Media"])
+        fetch = (
+            await message.client.get_messages(entity=storage, ids=note["Media"])
+            if note["Media"]
+            else None
+        )
+
         if hasattr(fetch, "media"):
             await utils.reply(message, fetch)
             return

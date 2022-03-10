@@ -48,7 +48,7 @@ class Help:
                     await message.edit(
                         templ + ", ".join(classinfo[cls]))
                     return
-        elif name and (name not in mods or name not in classinfo):
+        elif name:
             await message.edit("<b>There's nothing found under that name</b>")
             return
         for cls in classinfo:
